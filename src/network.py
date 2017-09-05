@@ -66,39 +66,39 @@ class Network(object):
             else:
                 print "Epoch {0} complete".format(j)
 
-    def update_mini_batch(self, mini_batch, eta):
+    def update_mini_batch(self, mini_batch, eta):#更新权重和偏好
         """Update the network's weights and biases by applying
         gradient descent using backpropagation to a single mini batch.
         The ``mini_batch`` is a list of tuples ``(x, y)``, and ``eta``
         is the learning rate."""
-        nabla_b = [np.zeros(b.shape) for b in self.biases]
+        nabla_b = [np.zeros(b.shape) for b in self.biases]#nabla——倒三角 ；初始化值
         nabla_w = [np.zeros(w.shape) for w in self.weights]
         for x, y in mini_batch:
             delta_nabla_b, delta_nabla_w = self.backprop(x, y)
             nabla_b = [nb+dnb for nb, dnb in zip(nabla_b, delta_nabla_b)]
             nabla_w = [nw+dnw for nw, dnw in zip(nabla_w, delta_nabla_w)]
-        self.weights = [w-(eta/len(mini_batch))*nw
+        self.weights = [w-(eta/len(mini_batch))*nw  #nw——偏导数  因为是随机梯度下降算法所以要除以len(mini_batch)
                         for w, nw in zip(self.weights, nabla_w)]
         self.biases = [b-(eta/len(mini_batch))*nb
                        for b, nb in zip(self.biases, nabla_b)]
 
     def backprop(self, x, y):
-        """Return a tuple ``(nabla_b, nabla_w)`` representing the
+        """Return a tuple ``(nabla_b, nabla_w)——两个偏导数`` representing the
         gradient for the cost function C_x.  ``nabla_b`` and
         ``nabla_w`` are layer-by-layer lists of numpy arrays, similar
         to ``self.biases`` and ``self.weights``."""
-        nabla_b = [np.zeros(b.shape) for b in self.biases]
+        nabla_b = [np.zeros(b.shape) for b in self.biases]#初始化
         nabla_w = [np.zeros(w.shape) for w in self.weights]
-        # feedforward
-        activation = x
-        activations = [x] # list to store all the activations, layer by layer
-        zs = [] # list to store all the z vectors, layer by layer
+        # feedforward——正向更新
+        activation = x#输入层的activation
+        activations = [x] # list to store all the activations, layer by layer/所有层的activation
+        zs = [] # list to store all the z vectors, layer by layer中间层
         for b, w in zip(self.biases, self.weights):
-            z = np.dot(w, activation)+b
+            z = np.dot(w, activation)+b#y=kx+b;
             zs.append(z)
             activation = sigmoid(z)
             activations.append(activation)
-        # backward pass
+        # backward pass#反向传递更新
         delta = self.cost_derivative(activations[-1], y) * \
             sigmoid_prime(zs[-1])
         nabla_b[-1] = delta

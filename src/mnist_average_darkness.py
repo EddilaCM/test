@@ -49,7 +49,7 @@ def avg_darknesses(training_data):
     avgs = defaultdict(float)
     for digit, n in digit_counts.iteritems():
         avgs[digit] = darknesses[digit] / n
-    return avgs
+    return avgs #»Ò¶ÈÖµ
 
 def guess_digit(image, avgs):
     """Return the digit whose average darkness in the training data is
